@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import ModeSelect from '~/components/ModeSelect'
 import AppsIcon from '@mui/icons-material/Apps'
-import { ReactComponent as TrelloIcon} from '~/assets/trello.svg'
+import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import Workspaces from './Menus/Workspaces'
@@ -40,15 +40,17 @@ function AppBar() {
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <TextField id="outlined-search" label="Search..." type="search" size='small' />
+
         <ModeSelect />
+
         <Tooltip title="Delete">
           <Badge color="secondary" variant="dot" sx={{ cursor: 'pointer' }}>
-            <NotificationsNoneIcon />
+            <NotificationsNoneIcon sx={{ color: 'primary.main' }}/>
           </Badge>
         </Tooltip>
 
         <Tooltip title="Delete">
-          <HelpOutlineIcon sx={{ cursor: 'pointer' }}/>
+          <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'primary.main' }}/>
         </Tooltip>
 
         <Profiles />
