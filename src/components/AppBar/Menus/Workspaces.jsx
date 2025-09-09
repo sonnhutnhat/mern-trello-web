@@ -25,12 +25,13 @@ function Workspaces() {
   return (
     <Box>
       <Button
+        sx={{ color: 'white' }}
         id="basic-button-workspaces"
         aria-controls="basic-menu-workspaces"
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        endIcon= {<ExpandMoreIcon />}
+        endIcon={<ExpandMoreIcon />}
       >
         Dashboard
       </Button>
