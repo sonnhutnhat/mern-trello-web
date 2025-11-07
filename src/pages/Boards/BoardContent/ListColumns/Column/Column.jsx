@@ -174,6 +174,7 @@ function Column({ column }) {
                   type="text"
                   size="small"
                   variant="outlined"
+                  data-no-dnd="true"
                   autoFocus
                   value={newCardTitle}
                   onChange={(e) => setNewCardTitle(e.target.value)}
@@ -201,6 +202,7 @@ function Column({ column }) {
                     variant="contained"
                     color="success"
                     size="small"
+                    data-no-dnd="true"
                   >
                     Add
                   </Button>
