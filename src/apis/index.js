@@ -1,9 +1,16 @@
 import axios from 'axios'
+import { update } from 'lodash'
 import { API_ROOT } from '~/utils/constants'
 
 /** Boards */
 export const fetchBoardDetailsAPI = async (boardId) => {
   const response = await axios.get(`${API_ROOT}/V1/boards/${boardId}`)
+  // Luu y: axios se tra ket qua ve qua property cua no la data
+  return response.data
+}
+
+export const updateBoardDetailsAPI = async (boardId, updateData) => {
+  const response = await axios.put(`${API_ROOT}/V1/boards/${boardId}`, updateData)
   // Luu y: axios se tra ket qua ve qua property cua no la data
   return response.data
 }
