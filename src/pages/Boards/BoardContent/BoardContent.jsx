@@ -30,7 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
 
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -187,6 +187,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
     //Cần đảm bảo nếu không tồn tại active hoặc over (khi kéo ra khỏi phạm vi container) thì không làm gì (tránh crash trang)
     if (!active || !over) return
 
+    // Xử lý kéo thả card
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       // activeDraggingCard: là cái card đang được kéo
       const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
@@ -248,9 +249,8 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
 
         //Dùng arrayMove của thằng dnd-kit để sắp xếp lại mảng Columns ban đầu
         const dndOrderedColumns = arrayMove(orderedColumnsState, oldColumnIndex, newColumnIndex)
-        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-        // console.log('dndOrderedColumns', dndOrderedColumns)
-        // console.log('dndOrderedColumnsIds', dndOrderedColumnsIds)
+
+        moveColumns(dndOrderedColumns)
 
         //Cập nhật lại state columns ban đầu sau khi đã kéo thả
         setOrderedColumnsState(dndOrderedColumns)
