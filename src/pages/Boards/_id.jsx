@@ -11,7 +11,8 @@ import {
   createNewColumnAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
@@ -72,10 +73,15 @@ function Board() {
     // Cap nhat state board
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
-    if (columnToUpdate) {
+    // Nếu Column rỗng: bản chất là đang chứa 1 Placeholder card (nhớ lại vid 37.2 hiện tại là vid 73)
+    if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+      columnToUpdate.cards = [createdCard]
+      columnToUpdate.cardOrderIds = [createdCard._id]
+    } else {
       columnToUpdate.cards.push(createdCard)
       columnToUpdate.cardOrderIds.push(createdCard._id)
     }
+
     setBoard(newBoard)
   }
 
@@ -110,6 +116,37 @@ function Board() {
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
 
+  /**
+   * Khi di chuyển card sang Column khác
+   * B1: Cập nhật mảng cardOrderIds của Column ban đầu chứa nó (Hiểu bản chất là xóa cái _id của Card ra khỏi mảng)
+   * B2: Cạp nhật mảng cardOrderIds của Column tiếp theo (Hiểu bản chất là thêm _id của Card vào mảng)
+   * B3: Cập nhật lại trường columnId mới của Card đã kéo
+   * => Làm một API support riêng.
+   */
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    // Update cho chuẩn dữ liệu state Board
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // Gọi API xử lý phía BE
+    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+    // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi Column, Column rỗng sẽ có placeholder card, cần xóa nó đi trước khi gửi dữ liệu lên cho phía BE
+    if (prevCardOrderIds[0].includes('-placeholder-card')) prevCardOrderIds = []
+
+
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    })
+
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -140,6 +177,7 @@ function Board() {
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   )
