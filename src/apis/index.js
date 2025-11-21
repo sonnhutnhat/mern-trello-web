@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { update } from 'lodash'
 import { API_ROOT } from '~/utils/constants'
 
 /** Boards */
@@ -11,6 +10,11 @@ export const fetchBoardDetailsAPI = async (boardId) => {
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await axios.put(`${API_ROOT}/V1/boards/${boardId}`, updateData)
+  return response.data
+}
+
+export const moveCardToDifferentColumnAPI = async (updateData) => {
+  const response = await axios.put(`${API_ROOT}/V1/boards/supports/moving_card`, updateData)
   return response.data
 }
 
